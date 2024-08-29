@@ -12,7 +12,11 @@
   "description": "",
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
+    "@robertklep/qbittorrent": "^1.0.1",
+    "@topcli/prompts": "^2.0.0",
     "axios": "^1.7.5",
+    "cookie": "^0.6.0",
+    "filesize": "^10.1.4",
     "ora": "^8.1.0"
   }
 }

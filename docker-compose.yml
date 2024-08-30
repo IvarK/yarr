@@ -12,8 +12,6 @@ services:
       - 6881:6881/udp
       # jackett
       - 9117:9117
-      # healthcheck
-      - 9999:9999
     volumes:
       - /opt/docker/gluetun:/gluetun
     restart: always

@@ -44,7 +44,7 @@ The examples below assume you use this alias, but if you don't you can just repl
 
 ### Searching and adding torrents
 
-Example usage `torrent add other "arch linux"`, the second parameter "other" specifies the output folder, there are three possible ones, "movie", "series" and "other". You can however pretty easily modify them to your hearts content if you just search the codebase for them. It sets the category as the output folder and the search term as the tag.
+Example usage `torrent add other "arch linux"`, the second parameter "other" specifies the output folder, there are three possible ones, "movie", "series" and "other". **Only download movies and series you can legally download, [for example from here](https://archive.org/details/moviesandfilms)** You can however pretty easily modify them to your hearts content if you just search the codebase for them. It sets the category as the output folder and the search term as the tag.
 
 After picking a torrent it will show you the progress bar for the download. You can safely CTRL+C from this, it doesn't interrupt anything meaningful.
 

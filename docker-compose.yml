@@ -1,6 +1,7 @@
 services:
   gluetun:
     image: qmcgaw/gluetun
+    name: gluetun
     cap_add:
       - NET_ADMIN
     env_file: "gluetun.env"
@@ -11,9 +12,25 @@ services:
       - 6881:6881/udp
       # jackett
       - 9117:9117
+      # healthcheck
+      - 9999:9999
     volumes:
       - /opt/docker/gluetun:/gluetun
     restart: always
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    depends_on:
+      - gluetun
+    network_mode: service:gluetun
+    environment:
+      - TZ=Etc/UTC
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS= #optional
+    volumes:
+      - /opt/docker/jackett:/config
+      - /opt/docker/blackhole:/downloads
+    restart: unless-stopped
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent
     container_name: qbittorrent
@@ -21,8 +38,6 @@ services:
       - gluetun
     network_mode: service:gluetun
     environment:
-      - PUID=1000
-      - PGID=1001
       - TZ=Etc/UTC
       - WEBUI_PORT=8180
     volumes:
@@ -32,19 +47,3 @@ services:
       - /media/series:/downloads/series
       - /media/other:/downloads/other
     restart: unless-stopped # no | always | on-failure | unless-stopped
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
-    depends_on:
-      - gluetun
-    network_mode: service:gluetun
-    environment:
-      - PUID=1000
-      - PGID=1001
-      - TZ=Etc/UTC
-      - AUTO_UPDATE=true #optional
-      - RUN_OPTS= #optional
-    volumes:
-      - /opt/docker/jackett:/config
-      - /opt/docker/blackhole:/downloads
-    restart: unless-stopped

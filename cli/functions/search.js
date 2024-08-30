@@ -4,8 +4,10 @@ import { filesize } from "filesize";
 import ora from 'ora';
 import { client } from './client.js'
 import { wait } from "../utils.js";
+import { watch } from "./watch.js";
 
-export const search = async (term, type) => {
+export const search = async () => {
+    const [, , , type, term] = process.argv;
     if (type !== "movie" && type !== "series" && type !== "other") {
         console.log("You can only search for movie, series or other!")
         return;
@@ -27,6 +29,11 @@ export const search = async (term, type) => {
     await client.search.delete(id);
     spinner.stop();
 
+    if (results.length === 0) {
+        console.log("No results found!")
+        return;
+    }
+
     const selection = await select("Pick a torrent", {
         choices: results.map(r => r.choiceText),
         maxVisible: 8
@@ -34,7 +41,17 @@ export const search = async (term, type) => {
 
     const torrent = results.find(r => r.choiceText === selection);
 
-    const res = await client.torrents.add(torrent.fileUrl);
+    const savepath = (() => {
+        if (type === 'movie') return '/downloads/movies'
+        else return `/downloads/${type}`
+    })()
 
-    console.log(res);
+    const res = await client.torrents.add({
+        urls: torrent.fileUrl,
+        savepath,
+        category: type,
+        tags: term.replace(/ /g, "_")
+    });
+
+    watch(term)
 }

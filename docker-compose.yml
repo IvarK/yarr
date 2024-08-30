@@ -1,7 +1,7 @@
 services:
   gluetun:
     image: qmcgaw/gluetun
-    name: gluetun
+    container_name: gluetun
     cap_add:
       - NET_ADMIN
     env_file: "gluetun.env"

@@ -3,8 +3,9 @@ import cliProgress from "cli-progress";
 import colors from 'ansi-colors';
 import { wait } from "../utils.js";
 import { filesize } from "filesize";
+import ora from 'ora';
 
-const getTorrent = async tag => {
+const getTorrent = async (tag, retry) => {
   const torrents = await client.torrents.info({
     tag: tag.replace(/ /g, "_"),
     limit: 1
@@ -12,15 +13,26 @@ const getTorrent = async tag => {
 
   if (torrents.length === 0) {
     console.log("\nTorrent not found! It might be completed already.")
+    if (retry) {
+      await wait(1000);
+      return getTorrent(tag, retry);
+    }
     return null;
   }
 
   return torrents[0];
 } 
 
-export const watch = async (tag) => {
-  if (!(await getTorrent(tag))) return;
+export const watch = async (tag, retry = false) => {
+  let spinner;
+  if (retry) {
+    spinner = ora(`Waiting for download to start...`);
+    spinner.spinner = 'shark';
+    spinner.start();
+  }
+  if (!(await getTorrent(tag, retry))) return;
 
+  if (retry) spinner.stop();
   const bar = new cliProgress.SingleBar({
     format: `${colors.cyan('{bar}')} {percentage}% | ${colors.blue('{downloaded}/{filesize} - {speed}')} | ETA: {eta_formatted} | Status: {status} -- ${colors.green('{title}')}`,
     barCompleteChar: '\u2588',

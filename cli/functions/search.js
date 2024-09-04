@@ -53,8 +53,5 @@ export const search = async () => {
         tags: term.replace(/ /g, "_")
     });
 
-    // Give time for qbittorrent to add the torrent before watching it
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    watch(term)
+    await watch(term, true)
 }

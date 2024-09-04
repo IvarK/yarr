@@ -46,12 +46,15 @@ export const search = async () => {
         else return `/downloads/${type}`
     })()
 
-    const res = await client.torrents.add({
+    await client.torrents.add({
         urls: torrent.fileUrl,
         savepath,
         category: type,
         tags: term.replace(/ /g, "_")
     });
+
+    // Give time for qbittorrent to add the torrent before watching it
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     watch(term)
 }

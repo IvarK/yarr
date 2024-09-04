@@ -4,7 +4,7 @@ services:
     container_name: gluetun
     cap_add:
       - NET_ADMIN
-    env_file: "gluetun.env"
+    env_file: ".env.gluetun"
     ports:
       # qbittorrent
       - 8180:8180
